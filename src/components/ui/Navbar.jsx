@@ -3,6 +3,8 @@ import { Link } from 'react-router-dom'
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
+import { useRef } from 'react'
+import axios from 'axios'
 import {
   Sheet,
   SheetClose,
@@ -35,9 +37,19 @@ import {
  
 
 
- 
+ const meetUrl="https://meet-app-e07ad-default-rtdb.asia-southeast1.firebasedatabase.app/"
 function Navbar() {
+  let titleInput=useRef()
   const [date, setDate] = React.useState(new Date())
+
+  function handleSubmit(){
+    axios.post(`${meetUrl}meets.json`,{
+      title:titleInput.current.value,
+      date:date
+    }).then(()=>{
+        console.log("data saved")
+    })
+  }
   return (
     <>
     <div className="flex items-center justify-between p-2">
@@ -61,7 +73,7 @@ function Navbar() {
             <Label htmlFor="name" className="text-right">
               Title
             </Label>
-            <Input id="name" placeholder="Meeting title" className="col-span-3" />
+            <Input id="name" ref={titleInput} placeholder="Meeting title" className="col-span-3" />
           </div>
           <div className="grid grid-cols-4 items-center gap-4">
             <Label htmlFor="username" className="text-right">
@@ -106,7 +118,7 @@ function Navbar() {
         </div>
         <SheetFooter>
           <SheetClose asChild>
-            <Button type="submit">Save changes</Button>
+            <Button onClick={handleSubmit}>Save changes</Button>
           </SheetClose>
         </SheetFooter>
       </SheetContent>
